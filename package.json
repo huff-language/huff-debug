@@ -1,17 +1,20 @@
 {
-  "name": "hardhat-ts-plugin-boilerplate",
+  "name": "huff-debug",
   "version": "0.0.1",
-  "description": "Hardhat TypeScript plugin boilerplate",
-  "repository": "github:nomiclabs/hardhat-ts-plugin-boilerplate",
-  "author": "Nomic Labs LLC",
+  "description": "Hevm based debugger support for hardhat-huff projects",
+  "repository": "github:huff-language/huff-debug",
+  "author": "maddiaa | cheethas",
   "license": "MIT",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "keywords": [
     "ethereum",
     "smart-contracts",
+    "huff-language",
+    "huff",
     "hardhat",
-    "hardhat-plugin"
+    "hardhat-plugin",
+    "nissan skyline gtr r34"
   ],
   "scripts": {
     "lint:fix": "prettier --write 'src/**/*.{js,ts}' 'test/**/*.{js,ts}' && tslint --fix --config tslint.json --project tsconfig.json",
