@@ -1,49 +1,32 @@
-import { extendConfig, extendEnvironment } from "hardhat/config";
-import { lazyObject } from "hardhat/plugins";
-import { HardhatConfig, HardhatUserConfig } from "hardhat/types";
-import path from "path";
-
-import { ExampleHardhatRuntimeEnvironmentField } from "./ExampleHardhatRuntimeEnvironmentField";
-// This import is needed to let the TypeScript compiler know that it should include your type
-// extensions in your npm package's types file.
+// Hardhat imports
+import { task } from "hardhat/config";
+import "@nomiclabs/hardhat-ethers";
 import "./type-extensions";
 
-extendConfig(
-  (config: HardhatConfig, userConfig: Readonly<HardhatUserConfig>) => {
-    // We apply our default config here. Any other kind of config resolution
-    // or normalization should be placed here.
-    //
-    // `config` is the resolved config, which will be used during runtime and
-    // you should modify.
-    // `userConfig` is the config as provided by the user. You should not modify
-    // it.
-    //
-    // If you extended the `HardhatConfig` type, you need to make sure that
-    // executing this function ensures that the `config` object is in a valid
-    // state for its type, including its extensions. For example, you may
-    // need to apply a default value, like in this example.
-    const userPath = userConfig.paths?.newPath;
+// Package imports
+import { debug } from "./debug";
+import { checkHevmInstallation } from "./utils";
 
-    let newPath: string;
-    if (userPath === undefined) {
-      newPath = path.join(config.paths.root, "newPath");
-    } else {
-      if (path.isAbsolute(userPath)) {
-        newPath = userPath;
-      } else {
-        // We resolve relative paths starting from the project's root.
-        // Please keep this convention to avoid confusion.
-        newPath = path.normalize(path.join(config.paths.root, userPath));
-      }
-    }
 
-    config.paths.newPath = newPath;
-  }
-);
+task("huff-debug")
+  .setDescription("Run a function within a huff file against the hevm debugger")
 
-extendEnvironment((hre) => {
-  // We add a field to the Hardhat Runtime Environment here.
-  // We use lazyObject to avoid initializing things until they are actually
-  // needed.
-  hre.example = lazyObject(() => new ExampleHardhatRuntimeEnvironmentField());
+  // Positional Parameters [file] [func] [args]
+  .addPositionalParam("file", "The name of the target file - NOTE: full file extension required")
+  .addPositionalParam("func", "The interface function name - E.g: balanceOf, transferFrom - this function must be defined at the top of your huff files")
+  .addPositionalParam("args", "Comma separated args, e.g. for (address,uint256) -> 0x0000000000000000000000000000000000000069,1")
+  
+  // Optional Parameters - Defining hevm state - not implemented yet
+  .addFlag("state", "Use persisted hevm state")
+  .addFlag("reset", "Reset persisted hevm state")
+  
+  .setAction(async ({file, func, args, state, reset}, { run, config, artifacts, ethers }) => {
+    // check hevm installation 
+    await checkHevmInstallation()
+
+    // Compile huff contracts
+    await run("compile");
+
+    // Init hevm debugger
+    await debug(file, func, args, {state, reset}, config.paths, artifacts, ethers);
 });
