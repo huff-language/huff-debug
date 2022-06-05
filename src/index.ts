@@ -1,7 +1,6 @@
 // Hardhat imports
 import { task } from "hardhat/config";
 import "@nomiclabs/hardhat-ethers";
-import "./type-extensions";
 
 // Package imports
 import { debug } from "./debug";
@@ -20,7 +19,7 @@ task("huff-debug")
   .addFlag("state", "Use persisted hevm state")
   .addFlag("reset", "Reset persisted hevm state")
   
-  .setAction(async ({file, func, args, state, reset}, { run, config, artifacts, ethers }) => {
+  .setAction(async ({file, func, args, state, reset}, { run, config, ethers }) => {
     // check hevm installation 
     await checkHevmInstallation()
 
@@ -28,5 +27,5 @@ task("huff-debug")
     await run("compile");
 
     // Init hevm debugger
-    await debug(file, func, args, {state, reset}, config.paths, artifacts, ethers);
+    await debug(file, func, args, {state, reset}, config.paths, ethers);
 });

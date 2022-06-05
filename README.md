@@ -67,12 +67,12 @@ huff-debug:
 For global options help run: hardhat help
 ```
 
-A huff interface consists of definitions that look something like this:
+A huff interface consists of definitions that looks as follows:
 `#define function mint(address,uint256) nonpayable returns ()`
 The anatomy of this definition is something like this: 
 `function <functionName>(<args>) <decorators>`
 
-To run your function with huffdebug simply name your target file, function name and args!
+To run your function with huff-debug simply name your target file, function name and args!
 
 Full example: `npx hardhat huff-debug ERC721.huff mint 0x0000000000000000000000000000000000000069,1`
 This will step through execution of the mint function within your ERC721 huff contract with the args address=0x0000000000000000000000000000000000000069 and amount=1.

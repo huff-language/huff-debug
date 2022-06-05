@@ -30,4 +30,10 @@ export const getFiles = async (paths: ProjectPathsConfig) => {
     return glob.sync(path.join(paths.sources, "**", "*.huff"));
   };
   
+export const getArtifact = async (
+    paths: ProjectPathsConfig, 
+    fileName: string
+) => {
+    return glob.sync(path.join(paths.artifacts, "**", `${fileName}.json`))
+}
   
